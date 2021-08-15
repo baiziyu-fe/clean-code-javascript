@@ -25,33 +25,28 @@ Software engineering principles, from Robert C. Martin's book
 adapted for JavaScript. This is not a style guide. It's a guide to producing
 [readable, reusable, and refactorable](https://github.com/ryanmcdermott/3rs-of-software-architecture) software in JavaScript.
 
-Not every principle herein has to be strictly followed, and even fewer will be
-universally agreed upon. These are guidelines and nothing more, but they are
-ones codified over many years of collective experience by the authors of
-_Clean Code_.
+并不是所有的原则都必须严格遵守，甚至更少
+普遍认同。这些是指导方针，仅此而已，但它们是
+由作者在多年的集体经验中编纂的
+_清洁代码_。
 
-Our craft of software engineering is just a bit over 50 years old, and we are
-still learning a lot. When software architecture is as old as architecture
-itself, maybe then we will have harder rules to follow. For now, let these
-guidelines serve as a touchstone by which to assess the quality of the
-JavaScript code that you and your team produce.
+我们的软件工程工艺只有 50 多年的历史，我们正在
+还是学了很多。当软件架构与架构一样古老时
+本身，也许那时我们会有更难遵守的规则。现在，让这些
+指导方针是评估质量的试金石
+您和您的团队生成的 JavaScript 代码。
 
-One more thing: knowing these won't immediately make you a better software
-developer, and working with them for many years doesn't mean you won't make
-mistakes. Every piece of code starts as a first draft, like wet clay getting
-shaped into its final form. Finally, we chisel away the imperfections when
-we review it with our peers. Don't beat yourself up for first drafts that need
-improvement. Beat up the code instead!
+还有一件事：了解这些不会立即使您成为更好的软件
+开发人员，与他们合作多年并不意味着你不会
+错误。每一段代码都是从初稿开始的，就像湿粘土一样
+塑造成它的最终形态。最后，当我们凿掉不完美之处
+我们与同行一起审查它。不要为需要的初稿而自责
+改进。而是打败代码！
 
 ## **Variables**
 
 ### Use meaningful and pronounceable variable names
 
-**Bad:**
-
-```javascript
-const yyyymmdstr = moment().format("YYYY/MM/DD");
-```
 
 **Good:**
 
@@ -62,14 +57,6 @@ const currentDate = moment().format("YYYY/MM/DD");
 **[⬆ back to top](#table-of-contents)**
 
 ### Use the same vocabulary for the same type of variable
-
-**Bad:**
-
-```javascript
-getUserInfo();
-getClientData();
-getCustomerRecord();
-```
 
 **Good:**
 
@@ -89,12 +76,6 @@ Make your names searchable. Tools like
 [ESLint](https://github.com/eslint/eslint/blob/660e0918933e6e7fede26bc675a0763a6b357c94/docs/rules/no-magic-numbers.md)
 can help identify unnamed constants.
 
-**Bad:**
-
-```javascript
-// What the heck is 86400000 for?
-setTimeout(blastOff, 86400000);
-```
 
 **Good:**
 
@@ -109,16 +90,6 @@ setTimeout(blastOff, MILLISECONDS_PER_DAY);
 
 ### Use explanatory variables
 
-**Bad:**
-
-```javascript
-const address = "One Infinite Loop, Cupertino 95014";
-const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
-saveCityZipCode(
-  address.match(cityZipCodeRegex)[1],
-  address.match(cityZipCodeRegex)[2]
-);
-```
 
 **Good:**
 
@@ -135,20 +106,6 @@ saveCityZipCode(city, zipCode);
 
 Explicit is better than implicit.
 
-**Bad:**
-
-```javascript
-const locations = ["Austin", "New York", "San Francisco"];
-locations.forEach(l => {
-  doStuff();
-  doSomeOtherStuff();
-  // ...
-  // ...
-  // ...
-  // Wait, what is `l` for again?
-  dispatch(l);
-});
-```
 
 **Good:**
 
@@ -171,19 +128,6 @@ locations.forEach(location => {
 If your class/object name tells you something, don't repeat that in your
 variable name.
 
-**Bad:**
-
-```javascript
-const Car = {
-  carMake: "Honda",
-  carModel: "Accord",
-  carColor: "Blue"
-};
-
-function paintCar(car, color) {
-  car.carColor = color;
-}
-```
 
 **Good:**
 
@@ -208,14 +152,6 @@ use them, your function will only provide default values for `undefined`
 arguments. Other "falsy" values such as `''`, `""`, `false`, `null`, `0`, and
 `NaN`, will not be replaced by a default value.
 
-**Bad:**
-
-```javascript
-function createMicrobrewery(name) {
-  const breweryName = name || "Hipster Brew Co.";
-  // ...
-}
-```
 
 **Good:**
 
@@ -231,44 +167,33 @@ function createMicrobrewery(name = "Hipster Brew Co.") {
 
 ### Function arguments (2 or fewer ideally)
 
-Limiting the amount of function parameters is incredibly important because it
-makes testing your function easier. Having more than three leads to a
-combinatorial explosion where you have to test tons of different cases with
-each separate argument.
+限制函数参数的数量非常重要，因为它
+使测试您的功能更容易。拥有三个以上的线索会导致
+组合爆炸，您必须测试大量不同的情况
+每个单独的论点。
 
-One or two arguments is the ideal case, and three should be avoided if possible.
-Anything more than that should be consolidated. Usually, if you have
-more than two arguments then your function is trying to do too much. In cases
-where it's not, most of the time a higher-level object will suffice as an
-argument.
+一两个参数是理想的情况，如果可能，应该避免三个参数。
+除此之外的任何事情都应该合并。通常，如果您有
+超过两个参数则您的函数尝试做的太多。在案件
+如果不是，大多数情况下，更高级别的对象就足够了
+争论。
 
-Since JavaScript allows you to make objects on the fly, without a lot of class
-boilerplate, you can use an object if you are finding yourself needing a
-lot of arguments.
+由于 JavaScript 允许您即时创建对象，而无需大量类
+样板，如果你发现自己需要一个对象，你可以使用一个对象
+很多论点。
 
-To make it obvious what properties the function expects, you can use the ES2015/ES6
-destructuring syntax. This has a few advantages:
+为了明确函数期望的属性，您可以使用 ES2015/ES6
+解构语法。这有几个优点：
 
-1. When someone looks at the function signature, it's immediately clear what
-   properties are being used.
-2. It can be used to simulate named parameters.
-3. Destructuring also clones the specified primitive values of the argument
-   object passed into the function. This can help prevent side effects. Note:
-   objects and arrays that are destructured from the argument object are NOT
-   cloned.
-4. Linters can warn you about unused properties, which would be impossible
-   without destructuring.
-
-**Bad:**
-
-```javascript
-function createMenu(title, body, buttonText, cancellable) {
-  // ...
-}
-
-createMenu("Foo", "Bar", "Baz", true);
-
-```
+1. 当有人看函数签名时，马上就知道是什么了
+   正在使用属性。
+2. 可用于模拟命名参数。
+3. 解构也会克隆参数的指定原始值
+   传递给函数的对象。这可以帮助防止副作用。笔记：
+   从参数对象解构的对象和数组不是
+   克隆。
+4. Linter 可以警告你未使用的属性，这是不可能的
+   无需解构。
 
 **Good:**
 
@@ -289,24 +214,12 @@ createMenu({
 
 ### Functions should do one thing
 
-This is by far the most important rule in software engineering. When functions
-do more than one thing, they are harder to compose, test, and reason about.
-When you can isolate a function to just one action, it can be refactored
-easily and your code will read much cleaner. If you take nothing else away from
-this guide other than this, you'll be ahead of many developers.
+这是迄今为止软件工程中最重要的规则。 当函数
+做不止一件事，它们更难编写、测试和推理。
+当你可以将一个函数隔离到一个动作时，它可以被重构
+很容易，你的代码会读得更干净。 如果你什么都不带走
+本指南除此之外，您将领先于许多开发人员。
 
-**Bad:**
-
-```javascript
-function emailClients(clients) {
-  clients.forEach(client => {
-    const clientRecord = database.lookup(client);
-    if (clientRecord.isActive()) {
-      email(client);
-    }
-  });
-}
-```
 
 **Good:**
 
@@ -321,22 +234,9 @@ function isActiveClient(client) {
 }
 ```
 
-**[⬆ back to top](#table-of-contents)**
 
 ### Function names should say what they do
 
-**Bad:**
-
-```javascript
-function addToDate(date, month) {
-  // ...
-}
-
-const date = new Date();
-
-// It's hard to tell from the function name what is added
-addToDate(date, 1);
-```
 
 **Good:**
 
@@ -356,33 +256,6 @@ addMonthToDate(1, date);
 When you have more than one level of abstraction your function is usually
 doing too much. Splitting up functions leads to reusability and easier
 testing.
-
-**Bad:**
-
-```javascript
-function parseBetterJSAlternative(code) {
-  const REGEXES = [
-    // ...
-  ];
-
-  const statements = code.split(" ");
-  const tokens = [];
-  REGEXES.forEach(REGEX => {
-    statements.forEach(statement => {
-      // ...
-    });
-  });
-
-  const ast = [];
-  tokens.forEach(token => {
-    // lex...
-  });
-
-  ast.forEach(node => {
-    // parse...
-  });
-}
-```
 
 **Good:**
 
@@ -425,60 +298,27 @@ function parse(tokens) {
 
 ### Remove duplicate code
 
-Do your absolute best to avoid duplicate code. Duplicate code is bad because it
-means that there's more than one place to alter something if you need to change
-some logic.
+尽最大努力避免重复代码。重复代码不好，因为它
+意味着如果你需要改变，有不止一个地方可以改变
+一些逻辑。
 
-Imagine if you run a restaurant and you keep track of your inventory: all your
-tomatoes, onions, garlic, spices, etc. If you have multiple lists that
-you keep this on, then all have to be updated when you serve a dish with
-tomatoes in them. If you only have one list, there's only one place to update!
+想象一下，如果您经营一家餐厅并跟踪您的库存：您所有的
+西红柿、洋葱、大蒜、香料等。 如果您有多个列表
+你保持这个状态，那么当你提供一道菜时，所有的都必须更新
+里面的西红柿。如果您只有一个列表，那么只有一个地方可以更新！
 
-Oftentimes you have duplicate code because you have two or more slightly
-different things, that share a lot in common, but their differences force you
-to have two or more separate functions that do much of the same things. Removing
-duplicate code means creating an abstraction that can handle this set of
-different things with just one function/module/class.
+通常你有重复的代码，因为你有两个或更多的轻微
+不同的东西，有很多共同点，但它们的差异迫使你
+有两个或多个独立的函数来做很多相同的事情。删除
+重复代码意味着创建一个可以处理这组代码的抽象
+只有一个功能/模块/类的不同的东西。
 
-Getting the abstraction right is critical, that's why you should follow the
-SOLID principles laid out in the _Classes_ section. Bad abstractions can be
-worse than duplicate code, so be careful! Having said this, if you can make
-a good abstraction, do it! Don't repeat yourself, otherwise you'll find yourself
-updating multiple places anytime you want to change one thing.
+正确的抽象是至关重要的，这就是为什么你应该遵循
+SOLID 原则在 _Classes_ 部分列出。糟糕的抽象可能是
+比重复代码更糟糕，所以要小心！话虽如此，如果你能让
+一个很好的抽象，去做吧！不要重复自己，否则你会发现自己
+随时更新多个地方您想改变一件事。
 
-**Bad:**
-
-```javascript
-function showDeveloperList(developers) {
-  developers.forEach(developer => {
-    const expectedSalary = developer.calculateExpectedSalary();
-    const experience = developer.getExperience();
-    const githubLink = developer.getGithubLink();
-    const data = {
-      expectedSalary,
-      experience,
-      githubLink
-    };
-
-    render(data);
-  });
-}
-
-function showManagerList(managers) {
-  managers.forEach(manager => {
-    const expectedSalary = manager.calculateExpectedSalary();
-    const experience = manager.getExperience();
-    const portfolio = manager.getMBAProjects();
-    const data = {
-      expectedSalary,
-      experience,
-      portfolio
-    };
-
-    render(data);
-  });
-}
-```
 
 **Good:**
 
@@ -511,26 +351,6 @@ function showEmployeeList(employees) {
 
 ### Set default objects with Object.assign
 
-**Bad:**
-
-```javascript
-const menuConfig = {
-  title: null,
-  body: "Bar",
-  buttonText: null,
-  cancellable: true
-};
-
-function createMenu(config) {
-  config.title = config.title || "Foo";
-  config.body = config.body || "Bar";
-  config.buttonText = config.buttonText || "Baz";
-  config.cancellable =
-    config.cancellable !== undefined ? config.cancellable : true;
-}
-
-createMenu(menuConfig);
-```
 
 **Good:**
 
@@ -566,17 +386,6 @@ createMenu(menuConfig);
 
 Flags tell your user that this function does more than one thing. Functions should do one thing. Split out your functions if they are following different code paths based on a boolean.
 
-**Bad:**
-
-```javascript
-function createFile(name, temp) {
-  if (temp) {
-    fs.create(`./temp/${name}`);
-  } else {
-    fs.create(name);
-  }
-}
-```
 
 **Good:**
 
@@ -594,36 +403,21 @@ function createTempFile(name) {
 
 ### Avoid Side Effects (part 1)
 
-A function produces a side effect if it does anything other than take a value in
-and return another value or values. A side effect could be writing to a file,
-modifying some global variable, or accidentally wiring all your money to a
-stranger.
+一个函数如果不做任何事情就会产生副作用
+并返回另一个值。 副作用可能是写入文件，
+修改一些全局变量，或者不小心将你所有的钱连接到一个
+陌生人。
 
-Now, you do need to have side effects in a program on occasion. Like the previous
-example, you might need to write to a file. What you want to do is to
-centralize where you are doing this. Don't have several functions and classes
-that write to a particular file. Have one service that does it. One and only one.
+现在，您有时确实需要在程序中产生副作用。 像以前一样
+例如，您可能需要写入文件。 你想要做的是
+集中你正在做的事情。 没有几个函数和类
+写入特定文件。 有一项服务可以做到这一点。 一个而且只有一个。
 
-The main point is to avoid common pitfalls like sharing state between objects
-without any structure, using mutable data types that can be written to by anything,
-and not centralizing where your side effects occur. If you can do this, you will
-be happier than the vast majority of other programmers.
+重点是避免常见的陷阱，例如在对象之间共享状态
+没有任何结构，使用任何可以写入的可变数据类型，
+而不是集中在你的副作用发生的地方。 如果你能做到这一点，你会
+比绝大多数其他程序员更快乐。
 
-**Bad:**
-
-```javascript
-// Global variable referenced by following function.
-// If we had another function that used this name, now it'd be an array and it could break it.
-let name = "Ryan McDermott";
-
-function splitIntoFirstAndLastName() {
-  name = name.split(" ");
-}
-
-splitIntoFirstAndLastName();
-
-console.log(name); // ['Ryan', 'McDermott'];
-```
 
 **Good:**
 
@@ -643,49 +437,42 @@ console.log(newName); // ['Ryan', 'McDermott'];
 
 ### Avoid Side Effects (part 2)
 
-In JavaScript, some values are unchangeable (immutable) and some are changeable 
-(mutable). Objects and arrays are two kinds of mutable values so it's important 
-to handle them carefully when they're passed as parameters to a function. A 
-JavaScript function can change an object's properties or alter the contents of 
-an array which could easily cause bugs elsewhere.
+在 JavaScript 中，有些值是不可变的（immutable），有些是可变的
+（可变）。对象和数组是两种可变值，所以很重要
+当它们作为参数传递给函数时要小心处理它们。一种
+JavaScript 函数可以更改对象的属性或更改对象的内容
+一个很容易在其他地方引起错误的数组。
 
-Suppose there's a function that accepts an array parameter representing a 
-shopping cart. If the function makes a change in that shopping cart array - 
-by adding an item to purchase, for example - then any other function that 
-uses that same `cart` array will be affected by this addition. That may be 
-great, however it could also be bad. Let's imagine a bad situation:
+假设有一个函数接受一个数组参数来表示一个
+购物车。如果该函数对该购物车数组进行了更改 -
+例如，通过添加要购买的项目 - 然后是任何其他功能
+使用相同的 `cart` 数组将受到此添加的影响。那可能
+很棒，但也可能很糟糕。让我们想象一个糟糕的情况：
 
-The user clicks the "Purchase" button which calls a `purchase` function that
-spawns a network request and sends the `cart` array to the server. Because
-of a bad network connection, the `purchase` function has to keep retrying the
-request. Now, what if in the meantime the user accidentally clicks an "Add to Cart"
-button on an item they don't actually want before the network request begins?
-If that happens and the network request begins, then that purchase function
-will send the accidentally added item because the `cart` array was modified.
+用户点击“购买”按钮，该按钮调用“购买”函数
+产生一个网络请求并将 `cart` 数组发送到服务器。因为
+如果网络连接不好，“购买”功能必须不断重试
+要求。现在，如果同时用户不小心点击了“添加到购物车”怎么办
+在网络请求开始之前，他们实际上并不想要的项目上的按钮？
+如果发生这种情况并且网络请求开始，那么购买功能
+将发送意外添加的项目，因为 `cart` 数组被修改。
 
-A great solution would be for the `addItemToCart` function to always clone the 
-`cart`, edit it, and return the clone. This would ensure that functions that are still
-using the old shopping cart wouldn't be affected by the changes.
+一个很好的解决方案是让 `addItemToCart` 函数始终克隆
+`cart`，编辑它，然后返回克隆。这将确保仍然存在的功能
+使用旧购物车不会受到更改的影响。
 
-Two caveats to mention to this approach:
+提到这种方法的两个警告：
 
-1. There might be cases where you actually want to modify the input object,
-   but when you adopt this programming practice you will find that those cases
-   are pretty rare. Most things can be refactored to have no side effects!
+1. 可能有些情况你真的想修改输入对象，
+   但是当你采用这种编程习惯时，你会发现那些情况
+   非常罕见。大多数东西都可以重构为没有副作用！
 
-2. Cloning big objects can be very expensive in terms of performance. Luckily,
-   this isn't a big issue in practice because there are
-   [great libraries](https://facebook.github.io/immutable-js/) that allow
-   this kind of programming approach to be fast and not as memory intensive as
-   it would be for you to manually clone objects and arrays.
+2. 克隆大对象在性能方面可能非常昂贵。幸运的是，
+   这在实践中不是一个大问题，因为有
+   [很棒的库](https://facebook.github.io/immutable-js/) 允许
+   这种编程方法要快而且不像内存密集
+   您可以手动克隆对象和数组。
 
-**Bad:**
-
-```javascript
-const addItemToCart = (cart, item) => {
-  cart.push({ item, date: Date.now() });
-};
-```
 
 **Good:**
 
@@ -699,24 +486,15 @@ const addItemToCart = (cart, item) => {
 
 ### Don't write to global functions
 
-Polluting globals is a bad practice in JavaScript because you could clash with another
-library and the user of your API would be none-the-wiser until they get an
-exception in production. Let's think about an example: what if you wanted to
-extend JavaScript's native Array method to have a `diff` method that could
-show the difference between two arrays? You could write your new function
-to the `Array.prototype`, but it could clash with another library that tried
-to do the same thing. What if that other library was just using `diff` to find
-the difference between the first and last elements of an array? This is why it
-would be much better to just use ES2015/ES6 classes and simply extend the `Array` global.
-
-**Bad:**
-
-```javascript
-Array.prototype.diff = function diff(comparisonArray) {
-  const hash = new Set(comparisonArray);
-  return this.filter(elem => !hash.has(elem));
-};
-```
+在 JavaScript 中污染全局变量是一种不好的做法，因为你可能会与另一个发生冲突
+图书馆和你的 API 的用户在他们得到一个
+生产异常。 让我们考虑一个例子：如果你想怎么办
+扩展 JavaScript 的本机 Array 方法以拥有一个 `diff` 方法，该方法可以
+显示两个数组之间的区别？ 你可以写你的新函数
+到`Array.prototype`，但它可能与另一个尝试过的库发生冲突
+做同样的事情。 如果其他库只是使用 `diff` 来查找怎么办
+数组的第一个元素和最后一个元素之间的区别？ 这就是为什么它
+只使用 ES2015/ES6 类并简单地扩展 `Array` 全局会更好。
 
 **Good:**
 
@@ -733,38 +511,11 @@ class SuperArray extends Array {
 
 ### Favor functional programming over imperative programming
 
-JavaScript isn't a functional language in the way that Haskell is, but it has
-a functional flavor to it. Functional languages can be cleaner and easier to test.
-Favor this style of programming when you can.
+JavaScript 不像 Haskell 那样是一种函数式语言，但它具有
+一种功能性的味道。 函数式语言可以更简洁，更易于测试。
+尽可能支持这种编程风格。
 
-**Bad:**
 
-```javascript
-const programmerOutput = [
-  {
-    name: "Uncle Bobby",
-    linesOfCode: 500
-  },
-  {
-    name: "Suzie Q",
-    linesOfCode: 1500
-  },
-  {
-    name: "Jimmy Gosling",
-    linesOfCode: 150
-  },
-  {
-    name: "Gracie Hopper",
-    linesOfCode: 1000
-  }
-];
-
-let totalOutput = 0;
-
-for (let i = 0; i < programmerOutput.length; i++) {
-  totalOutput += programmerOutput[i].linesOfCode;
-}
-```
 
 **Good:**
 
@@ -798,13 +549,6 @@ const totalOutput = programmerOutput.reduce(
 
 ### Encapsulate conditionals
 
-**Bad:**
-
-```javascript
-if (fsm.state === "fetching" && isEmpty(listNode)) {
-  // ...
-}
-```
 
 **Good:**
 
@@ -822,17 +566,6 @@ if (shouldShowSpinner(fsmInstance, listNodeInstance)) {
 
 ### Avoid negative conditionals
 
-**Bad:**
-
-```javascript
-function isDOMNodeNotPresent(node) {
-  // ...
-}
-
-if (!isDOMNodeNotPresent(node)) {
-  // ...
-}
-```
 
 **Good:**
 
@@ -850,32 +583,15 @@ if (isDOMNodePresent(node)) {
 
 ### Avoid conditionals
 
-This seems like an impossible task. Upon first hearing this, most people say,
-"how am I supposed to do anything without an `if` statement?" The answer is that
-you can use polymorphism to achieve the same task in many cases. The second
-question is usually, "well that's great but why would I want to do that?" The
-answer is a previous clean code concept we learned: a function should only do
-one thing. When you have classes and functions that have `if` statements, you
-are telling your user that your function does more than one thing. Remember,
-just do one thing.
+这似乎是一项不可能完成的任务。 大多数人第一次听到这个，都会说，
+“如果没有‘if’语句，我该怎么做？” 答案是
+在许多情况下，您可以使用多态来完成相同的任务。 第二
+问题通常是，“这很好，但我为什么要这样做？” 这
+答案是我们之前学到的一个干净的代码概念：一个函数应该只做
+一件事。 当你有包含 `if` 语句的类和函数时，你
+告诉您的用户您的功能不止一件事。 记住，
+只做一件事。
 
-**Bad:**
-
-```javascript
-class Airplane {
-  // ...
-  getCruisingAltitude() {
-    switch (this.type) {
-      case "777":
-        return this.getMaxAltitude() - this.getPassengerCount();
-      case "Air Force One":
-        return this.getMaxAltitude();
-      case "Cessna":
-        return this.getMaxAltitude() - this.getFuelExpenditure();
-    }
-  }
-}
-```
 
 **Good:**
 
@@ -910,22 +626,10 @@ class Cessna extends Airplane {
 
 ### Avoid type-checking (part 1)
 
-JavaScript is untyped, which means your functions can take any type of argument.
-Sometimes you are bitten by this freedom and it becomes tempting to do
-type-checking in your functions. There are many ways to avoid having to do this.
-The first thing to consider is consistent APIs.
-
-**Bad:**
-
-```javascript
-function travelToTexas(vehicle) {
-  if (vehicle instanceof Bicycle) {
-    vehicle.pedal(this.currentLocation, new Location("texas"));
-  } else if (vehicle instanceof Car) {
-    vehicle.drive(this.currentLocation, new Location("texas"));
-  }
-}
-```
+JavaScript 是无类型的，这意味着您的函数可以接受任何类型的参数。
+有时你会被这种自由咬伤，它变得很诱人
+在您的函数中进行类型检查。 有很多方法可以避免这样做。
+首先要考虑的是一致的 API。
 
 **Good:**
 
